@@ -1,7 +1,8 @@
-import LayOut from "../components/layout";
-import Head from "next/head";
-import { TOKEN, DATABASE_ID } from "../config";
-export default function Projects() {
+import LayOut from '../components/layout';
+import Head from 'next/head';
+import { TOKEN, DATABASE_ID } from '../config';
+export default function Projects({ projectNames }) {
+  console.log(projectNames);
   return (
     <LayOut>
       <Head>
@@ -10,19 +11,19 @@ export default function Projects() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h1>프로젝트</h1>
+      <h1>총 프로젝트</h1>
     </LayOut>
   );
 }
 
 // 빌드 타임에 호출
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const options = {
-    method: "POST",
+    method: 'POST',
     headers: {
-      accept: "application/json",
-      "Notion-Version": "2022-06-28",
-      "content-type": "application/json",
+      accept: 'application/json',
+      'Notion-Version': '2022-02-22',
+      'content-type': 'application/json',
       Authorization: `Bearer ${TOKEN}`,
     },
     body: JSON.stringify({ page_size: 100 }),
@@ -34,16 +35,16 @@ export async function getStaticProps() {
   );
   const projects = await res.json();
 
-  // console.log(result);
+  // console.log(allProjects);
 
   const projectNames = projects.results.map(
-    (aProject) => aProject.properties.Name.title[0]?.plain_text
+    aProject => aProject.properties.Name.title[0]?.plain_text
   );
 
   console.log(`projectNames : ${projectNames}`);
 
   return {
-    props: {},
+    props: { projectNames },
   };
 }
 
