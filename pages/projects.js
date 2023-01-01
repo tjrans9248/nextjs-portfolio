@@ -1,23 +1,32 @@
 import LayOut from '../components/layout';
 import Head from 'next/head';
 import { TOKEN, DATABASE_ID } from '../config';
-export default function Projects({ projectNames }) {
-  console.log(projectNames);
+import ProjectItem from '../components/projects/project-item';
+export default function Projects({ projects }) {
+  console.log(projects);
   return (
-    <LayOut>
+    <LayOut className="flex flex-col ">
       <Head>
         <title>션 포트폴리오</title>
         <meta name="description" content="오늘도 지식을 쌓자" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h1>총 프로젝트</h1>
+      <h1 className="text-3xl font-bold sm:text-5xl">
+        총 프로젝트 : {projects.results.length}
+      </h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 py-10 m-6 gap-8 sm:w-full">
+        {projects.results.map(item => (
+          <ProjectItem key={item.id} data={item} />
+        ))}
+      </div>
     </LayOut>
   );
 }
 
 // 빌드 타임에 호출
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const options = {
     method: 'POST',
     headers: {
@@ -26,7 +35,9 @@ export async function getServerSideProps() {
       'content-type': 'application/json',
       Authorization: `Bearer ${TOKEN}`,
     },
-    body: JSON.stringify({ page_size: 100 }),
+    body: JSON.stringify({
+      page_size: 100,
+    }),
   };
 
   const res = await fetch(
@@ -35,35 +46,17 @@ export async function getServerSideProps() {
   );
   const projects = await res.json();
 
-  // console.log(allProjects);
+  // console.log(projects);
 
   const projectNames = projects.results.map(
-    aProject => aProject.properties.Name.title[0]?.plain_text
+    item => item.properties.Name.title[0].plain_text
   );
+
+  // const allProjects = JSON.parse(JSON.stringify(projectNames));
 
   console.log(`projectNames : ${projectNames}`);
 
   return {
-    props: { projectNames },
+    props: { projects },
   };
 }
-
-// "title": [
-//   {
-//       "type": "text",
-//       "text": {
-//           "content": "션 프로젝트",
-//           "link": null
-//       },
-//       "annotations": {
-//           "bold": false,
-//           "italic": false,
-//           "strikethrough": false,
-//           "underline": false,
-//           "code": false,
-//           "color": "default"
-//       },
-//       "plain_text": "션 프로젝트",
-//       "href": null
-//   }
-// ]
