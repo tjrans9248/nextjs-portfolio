@@ -10,7 +10,7 @@ export default function Hero() {
           <br className="hidden lg:inline-block" />
           오늘도 공부합니다
         </h1>
-        <p className="mb-8 leading-relaxed text-2xl">
+        <p className="mb-8 leading-relaxed text-xl">
           호텔업계에서 누구보다 가까운 거리에서 사용자와 커뮤니테이션을
           하였으며, 세상에 하나의 티끌같은 편함이라도{' '}
           <strong>제공하기 위해 끊임없는 고민과 학습</strong>이 사용자에게
